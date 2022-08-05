@@ -18,6 +18,7 @@ import com.facebook.airlift.http.client.Request;
 import com.facebook.airlift.json.JsonCodec;
 import com.facebook.presto.client.QueryResults;
 import com.facebook.presto.execution.QueryState;
+import com.facebook.presto.execution.TaskInfo;
 import com.facebook.presto.server.BasicQueryInfo;
 import com.facebook.presto.server.QueryStateInfo;
 import com.facebook.presto.server.testing.TestingPrestoServer;
@@ -147,5 +148,11 @@ public class QueryExecutionClientUtil
     {
         Request request = prepareGet().setUri(server.resolve(path)).build();
         return client.execute(request, createJsonResponseHandler(jsonCodec(QueryStateInfo.class)));
+    }
+
+    public static TaskInfo getTaskInfo(HttpClient client, TestingPrestoServer server, String path)
+    {
+        Request request = prepareGet().setUri(server.resolve(path)).build();
+        return client.execute(request, createJsonResponseHandler(jsonCodec(TaskInfo.class)));
     }
 }

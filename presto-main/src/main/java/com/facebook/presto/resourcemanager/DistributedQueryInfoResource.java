@@ -14,6 +14,7 @@
 package com.facebook.presto.resourcemanager;
 
 import com.facebook.airlift.http.client.HttpClient;
+import com.facebook.airlift.http.client.HttpUriBuilder;
 import com.facebook.airlift.http.client.Request;
 import com.facebook.airlift.json.JsonCodec;
 import com.facebook.airlift.log.Logger;
@@ -154,6 +155,8 @@ public class DistributedQueryInfoResource
             return;
         }
 
-        proxyHelper.performRequest(servletRequest, asyncResponse, uriBuilderFrom(queryInfo.get().getSelf()).replacePath(uriInfo.getPath()).build());
+        HttpUriBuilder uriBuilder = uriBuilderFrom(queryInfo.get().getSelf()).replacePath(uriInfo.getPath());
+        uriInfo.getQueryParameters().forEach(uriBuilder::addParameter);
+        proxyHelper.performRequest(servletRequest, asyncResponse, uriBuilder.build());
     }
 }

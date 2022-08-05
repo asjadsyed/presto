@@ -136,19 +136,18 @@ public class QueryStateInfoResource
     @GET
     @Path("{queryId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public void getQueryStateInfo(@PathParam("queryId") String queryId, @HeaderParam(X_FORWARDED_PROTO) String xForwardedProto,
+    public void getQueryStateInfo(@PathParam("queryId") QueryId queryId, @HeaderParam(X_FORWARDED_PROTO) String xForwardedProto,
             @Context UriInfo uriInfo,
             @Context HttpServletRequest servletRequest,
             @Suspended AsyncResponse asyncResponse)
             throws WebApplicationException
     {
         try {
-            QueryId queryID = new QueryId(queryId);
-            if (resourceManagerEnabled && !dispatchManager.isQueryPresent(queryID)) {
+            if (resourceManagerEnabled && !dispatchManager.isQueryPresent(queryId)) {
                 proxyQueryStateInfo(servletRequest, asyncResponse, xForwardedProto, uriInfo);
             }
             else {
-                BasicQueryInfo queryInfo = dispatchManager.getQueryInfo(queryID);
+                BasicQueryInfo queryInfo = dispatchManager.getQueryInfo(queryId);
                 asyncResponse.resume(Response.ok(getQueryStateInfo(queryInfo, false, true, OptionalInt.empty())).build());
             }
         }
